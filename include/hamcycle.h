@@ -1,11 +1,8 @@
 #ifndef HAMCYCLE_H
 #define HAMCYCLE_H
 
-#include "Graph.h"
+#include "graph.h"
 
-class HamCycle {
-public:
-    static bool findCycle(Graph& g, vector<int>& path);
-};
+void findHam(Graph& g);
 
 #endif

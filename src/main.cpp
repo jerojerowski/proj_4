@@ -1,4 +1,9 @@
 #include <iostream>
+#include "eulercycle.h"
+#include "graph.h"
+#include "hamcycle.h"
+#include "hamgraph.h"
+#include "nonhamgraph.h"
 
 
 using namespace std;
@@ -19,25 +24,20 @@ main(int argc, char* argv[]){
         cout<<"\nsaturation> ";
         int sat;
         cin>>sat;
-        hamilton(nodes,sat);
+        Graph Graph(nodes,sat);
+        hamilton(sat);
     } 
     else if(mode=="--non-hamilton"){
         cout<<"nodes> ";
         int nodes;
         cin>>nodes;
-        non_hamilton(nodes);
+        Graph Graph(nodes,50);
+        non_hamilton();
     }
     else{
         cout<<"Invalid usage of modes";
         exit(0);
     }
 
-
-    
-
-
-
-
-
-    
+    printGraph();
 }

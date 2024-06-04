@@ -1,12 +1,13 @@
 #include "hamcycle.h"
+#include "graph.h"
 #include <vector>
 #include <iostream>
 
 using namespace std;
 
-bool hamUtil(int v, Graph& g, vector<int>& path, vector<bool>& vis, int& cnt) {
-    if (cnt == g.getN()) {
-        if (g.getAdj()[v][path[0]] == 1) {
+bool hamUtil(int v, vector<int>& path, vector<bool>& vis, int& cnt) {
+    if (cnt == Graph::getN()) {
+        if (Graph::getAdj()[v][path[0]] == 1) {
             return true;
         }
         return false;
@@ -15,9 +16,9 @@ bool hamUtil(int v, Graph& g, vector<int>& path, vector<bool>& vis, int& cnt) {
     vis[v] = true;
     path[cnt++] = v;
 
-    for (int i = 0; i < g.getN(); ++i) {
-        if (g.getAdj()[v][i] == 1 && !vis[i]) {
-            if (hamUtil(i, g, path, vis, cnt)) {
+    for (int i = 0; i < Graph::getN(); ++i) {
+        if (Graph::getAdj()[v][i] == 1 && !vis[i]) {
+            if (hamUtil(i, path, vis, cnt)) {
                 return true;
             }
         }
@@ -28,16 +29,16 @@ bool hamUtil(int v, Graph& g, vector<int>& path, vector<bool>& vis, int& cnt) {
     return false;
 }
 
-bool isHam(Graph& g) {
-    vector<int> path(g.getN());
-    vector<bool> vis(g.getN(), false);
+bool isHam() {
+    vector<int> path(Graph::getN());
+    vector<bool> vis(Graph::getN(), false);
     int cnt = 0;
 
-    if (!hamUtil(0, g, path, vis, cnt)) {
+    if (!hamUtil(0, path, vis, cnt)) {
         return false;
     }
 
-    for (int i = 0; i < g.getN(); ++i) {
+    for (int i = 0; i < Graph::getN(); ++i) {
         if (!vis[i]) {
             return false;
         }
@@ -46,8 +47,8 @@ bool isHam(Graph& g) {
     return true;
 }
 
-void findHam(Graph& g) {
-    if (!isHam(g)) {
+void findHam() {
+    if (!isHam()) {
         cout << "No Hamilton cycle." << endl;
         return;
     }

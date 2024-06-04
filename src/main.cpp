@@ -17,23 +17,24 @@ int main(int argc, char* argv[]) {
         cout << "nodes> ";
         int nodes;
         cin >> nodes;
-        cout << "\nsaturation> ";
-        int sat;
+        cout << "saturation> ";
+        double sat;
         cin >> sat;
-        Graph g(nodes, sat);
-        genHam(g, sat);
-        g.print();
-        findHam(g);
-        findEuler(g);
+        sat=sat/100;
+        Graph::init(nodes, sat);
+        genHam(sat);
+        Graph::print();
+        findHam();
+        findEuler();
     } else if (mode == "--non-hamilton") {
         cout << "nodes> ";
         int nodes;
         cin >> nodes;
-        Graph g(nodes, 0.5);
-        genNonHam(g);
-        g.print();
-        findHam(g);
-        findEuler(g);
+        Graph::init(nodes, 0.5);
+        genNonHam();
+        Graph::print();
+        findHam();
+        findEuler();
     } else {
         cout << "Invalid usage of modes" << endl;
         return 1;

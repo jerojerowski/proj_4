@@ -3,25 +3,28 @@
 
 #include <vector>
 #include <iostream>
+#include <random>
+#include <numeric>
+#include <algorithm>
 
 using namespace std;
 
 class Graph {
 public:
-    Graph(int n, double s);
-    void print();
-    void addEdge(int u, int v);
-    void remEdge(int u, int v);
-    int getN();
-    vector<vector<int>>& getAdj();
+    static void init(int nodes, double sat);
+    static void print();
+    static void addEdge(int u, int v);
+    static void remEdge(int u, int v);
+    static int getN();
+    static vector<vector<int>>& getAdj();
+     static int n;
+    static double s;
+    static vector<vector<int>> adj;
 
 private:
-    int n;
-    double s;
-    vector<vector<int>> adj;
 };
 
-void genHam(Graph& g, double s);
-void genNonHam(Graph& g);
+void genHam(double s);
+void genNonHam();
 
-#endif
+#endif // GRAPH_H

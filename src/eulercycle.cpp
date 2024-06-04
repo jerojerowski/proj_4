@@ -1,16 +1,17 @@
 #include "eulercycle.h"
+#include "graph.h"
 #include <stack>
-#include <vector>
+#include <vector> 
 #include <iostream>
 
 using namespace std;
 
-bool isEuler(Graph& g) {
+bool isEuler() {
     int oddCnt = 0;
-    for (int i = 0; i < g.getN(); ++i) {
+    for (int i = 0; i < Graph::getN(); ++i) {
         int deg = 0;
-        for (int j = 0; j < g.getN(); ++j) {
-            deg += g.getAdj()[i][j];
+        for (int j = 0; j < Graph::getN(); ++j) {
+            deg += Graph::getAdj()[i][j];
         }
         if (deg % 2 != 0) {
             oddCnt++;
@@ -19,17 +20,17 @@ bool isEuler(Graph& g) {
     return (oddCnt == 0 || oddCnt == 2);
 }
 
-void findEuler(Graph& g) {
-    if (!isEuler(g)) {
+void findEuler() {
+    if (!isEuler()) {
         cout << "No Euler cycle." << endl;
         return;
     }
 
     int start = 0;
-    for (int i = 0; i < g.getN(); ++i) {
+    for (int i = 0; i < Graph::getN(); ++i) {
         int deg = 0;
-        for (int j = 0; j < g.getN(); ++j) {
-            deg += g.getAdj()[i][j];
+        for (int j = 0; j < Graph::getN(); ++j) {
+            deg += Graph::getAdj()[i][j];
         }
         if (deg % 2 != 0) {
             start = i;
@@ -44,10 +45,10 @@ void findEuler(Graph& g) {
     while (!stk.empty()) {
         int u = stk.top();
         bool found = false;
-        for (int v = 0; v < g.getN(); ++v) {
-            if (g.getAdj()[u][v] > 0) {
+        for (int v = 0; v < Graph::getN(); ++v) {
+            if (Graph::getAdj()[u][v] > 0) {
                 stk.push(v);
-                g.remEdge(u, v);
+                Graph::remEdge(u, v);
                 found = true;
                 break;
             }

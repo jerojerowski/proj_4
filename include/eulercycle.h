@@ -4,5 +4,5 @@
 #include "graph.h"
 
 void findEuler(Graph& g);
-
+bool isEuler(Graph& g);
 #endif

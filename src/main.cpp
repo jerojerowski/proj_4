@@ -23,21 +23,34 @@ int main(int argc, char* argv[]) {
         sat=sat/100;
         Graph::init(nodes, sat);
         genHam(sat);
-        Graph::print();
-        findHam();
-        findEuler();
     } else if (mode == "--non-hamilton") {
         cout << "nodes> ";
         int nodes;
         cin >> nodes;
         Graph::init(nodes, 0.5);
         genNonHam();
-        Graph::print();
-        findHam();
-        findEuler();
     } else {
         cout << "Invalid usage of modes" << endl;
         return 1;
+    }
+
+    while(true){
+        cout<<"action> ";
+        string action;
+        cin>>action;
+        if(action=="Print"){
+            Graph::print();
+        }
+        else if(action=="Ham"){
+            findHam();
+        }
+        else if(action=="Euler"){
+            findEuler();
+        }
+        else if(action=="exit"){
+            cout<<"Exiting program"<<endl;
+            exit(0);
+        }
     }
 
     return 0;

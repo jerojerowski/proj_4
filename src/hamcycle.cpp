@@ -59,9 +59,9 @@ void findHam() {
 
         hamUtil(0, path, vis, 1);
 
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i <= n; ++i) {
             cout << path[i]+1;
-            if (i < n - 1) {
+            if (i < n) {
                 cout << " -> ";
             }
         }

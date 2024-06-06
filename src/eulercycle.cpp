@@ -61,7 +61,8 @@ void findEuler() {
 
     cout << "Euler cycle: ";
     for (int i = circ.size() - 1; i >= 0; --i) {
-        cout << circ[i]+1 << " -> ";
+        cout << circ[i]+1;
+        if(i>0) cout<<" -> ";
     }
     cout << endl;
 }

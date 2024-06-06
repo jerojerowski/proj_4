@@ -1,7 +1,7 @@
 #include "eulercycle.h"
 #include "graph.h"
 #include <stack>
-#include <vector> 
+#include <vector>
 #include <iostream>
 
 using namespace std;
@@ -61,7 +61,7 @@ void findEuler() {
 
     cout << "Euler cycle: ";
     for (int i = circ.size() - 1; i >= 0; --i) {
-        cout << circ[i] << " ";
+        cout << circ[i]+1 << " ";
     }
     cout << endl;
 }

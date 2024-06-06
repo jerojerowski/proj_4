@@ -2,7 +2,7 @@ import os
 import shutil
 import sys
 
-def generate_file(filename, n, saturation=70):
+def generate_file(filename, n, saturation=30):
     with open(filename, 'w') as file:
         file.write(f"{n}\n{saturation}\n")
 

@@ -1,4 +1,10 @@
 #include "graph.h"
+#include <iostream>
+#include <numeric>
+#include <random>
+#include <algorithm>
+
+using namespace std;
 
 int Graph::n = 0;
 double Graph::s = 0.0;
@@ -59,13 +65,19 @@ void genHam(double s) {
         }
     }
 
-    // Ensure every vertex has an even degree
     for (int i = 0; i < n; ++i) {
         int deg = accumulate(Graph::getAdj()[i].begin(), Graph::getAdj()[i].end(), 0);
         if (deg % 2 != 0) {
             for (int j = 0; j < n; ++j) {
                 if (i != j && Graph::getAdj()[i][j] == 0) {
-                    Graph::addEdge(i, j);
+                    for (int k = 0; k < n; ++k) {
+                        if (j != k && i != k && Graph::getAdj()[j][k] == 0 && Graph::getAdj()[i][k] == 0) {
+                            Graph::addEdge(i, j);
+                            Graph::addEdge(j, k);
+                            Graph::addEdge(k, i);
+                            break;
+                        }
+                    }
                     break;
                 }
             }

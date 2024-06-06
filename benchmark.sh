@@ -16,16 +16,16 @@ for representation in "representations/"*; do
 $normal============================[INSTANCE SIZE $instance_size]============================$green
 Running the $routine benchmark for $representation. 
 $normal============================[Input]============================$gray
-$(cat $representation $benchmark $routine <(echo $instance_size) <(echo exit))
+$(cat $benchmark $routine <(echo exit))
 $normal============================[Program Output]===================$teal 
 
 EOF
             printf "$(more $tmpLogFile)"
             
             tmpFile=$(mktemp)
-            run_project="./graph --generate"
+            run_project="./target/debug/graph --hamilton"
             start_time=$(date +%s%N)
-            { $run_project < <(cat $representation $benchmark $routine <(echo $instance_size) <(echo exit)) >$tmpFile; } 2>&1
+            { $run_project < <(cat $benchmark $routine <(echo exit)) >$tmpFile; } 2>&1
             end_time=$(date +%s%N)
             duration=$(( (end_time - start_time) / 1000000 )) # Obliczenie czasu trwania w milisekundach
             

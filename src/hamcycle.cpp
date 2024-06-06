@@ -50,5 +50,21 @@ void findHam() {
         cout << "No Hamilton cycle." << endl;
     } else {
         cout << "Hamilton cycle exists." << endl;
+        int n = Graph::getN();
+        vector<int> path(n);
+        vector<bool> vis(n, false);
+
+        path[0] = 0;
+        vis[0] = true;
+
+        hamUtil(0, path, vis, 1);
+
+        for (int i = 0; i < n; ++i) {
+            cout << path[i]+1;
+            if (i < n - 1) {
+                cout << " -> ";
+            }
+        }
+        cout << endl;
     }
 }

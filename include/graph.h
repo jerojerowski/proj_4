@@ -16,6 +16,8 @@ public:
     static void addEdge(int u, int v);
     static void remEdge(int u, int v);
     static int getN();
+    static int getDeg(int v);
+    static void exportToTikz(const std::string& filename);
     static vector<vector<int>>& getAdj();
      static int n;
     static double s;

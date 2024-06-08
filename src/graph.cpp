@@ -3,6 +3,7 @@
 #include <numeric>
 #include <random>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -23,6 +24,14 @@ void Graph::print() {
         }
         cout << endl;
     }
+}
+
+int Graph::getDeg(int v) {
+    int deg = 0;
+    for (int j = 0; j < getN(); ++j) {
+        deg += getAdj()[v][j];
+    }
+    return deg;
 }
 
 void Graph::addEdge(int u, int v) {
@@ -52,35 +61,38 @@ void genHam(double s) {
     for (int i = 0; i < n; ++i) {
         Graph::addEdge(cycle[i], cycle[(i + 1) % n]);
     }
-
-    int edgeCnt = n;
-    int tgtEdges = static_cast<int>((n * (n - 1) / 2) * s / 100);
-
-    while (edgeCnt < tgtEdges) {
-        int u = rand() % n;
-        int v = rand() % n;
-        if (u != v && Graph::getAdj()[u][v] == 0) {
-            Graph::addEdge(u, v);
-            edgeCnt++;
-        }
-    }
-
+    
     for (int i = 0; i < n; ++i) {
-        int deg = accumulate(Graph::getAdj()[i].begin(), Graph::getAdj()[i].end(), 0);
+        int deg = Graph::getDeg(i);
         if (deg % 2 != 0) {
-            for (int j = 0; j < n; ++j) {
-                if (i != j && Graph::getAdj()[i][j] == 0) {
-                    for (int k = 0; k < n; ++k) {
-                        if (j != k && i != k && Graph::getAdj()[j][k] == 0 && Graph::getAdj()[i][k] == 0) {
-                            Graph::addEdge(i, j);
-                            Graph::addEdge(j, k);
-                            Graph::addEdge(k, i);
-                            break;
-                        }
-                    }
+            int j = (i + 1) % n;
+            while (j != i) {
+                int nextDeg = Graph::getDeg(j);
+                if (nextDeg % 2 != 0) {
+                    Graph::addEdge(i, j);
                     break;
                 }
+                j = (j + 1) % n;
             }
+        }
+    }
+    const auto& adj = Graph::getAdj();
+    int edgeCnt = 0;
+    for (const auto& row : adj) {
+        edgeCnt += std::accumulate(row.begin(), row.end(), 0);
+    }
+    edgeCnt /= 2;
+    int tgtEdges = static_cast<int>((n * (n - 1) / 2) * s / 100);
+    while (edgeCnt < tgtEdges) {
+        int u = rand() % n;
+        int v = (u + 1) % n;
+        int w = (u + 2) % n;
+        if (u != v && u != w && v != w &&
+            Graph::getAdj()[u][v] == 0 && Graph::getAdj()[v][w] == 0 && Graph::getAdj()[w][u] == 0) {
+            Graph::addEdge(u, v);
+            Graph::addEdge(v, w);
+            Graph::addEdge(w, u);
+            edgeCnt += 3;
         }
     }
 }
@@ -91,4 +103,37 @@ void genNonHam() {
     for (int i = 0; i < Graph::getN(); ++i) {
         Graph::remEdge(isolated, i);
     }
+}
+
+void Graph::exportToTikz(const std::string& filename) {
+    ofstream outFile(filename);
+
+    outFile << "\\documentclass{standalone}\n";
+    outFile << "\\usepackage{tikz}\n";
+    outFile << "\\begin{document}\n";
+    outFile << "\\begin{tikzpicture}[>=stealth,shorten >=1pt,auto,node distance=1.5cm,thick]\n";
+    outFile << "\\tikzstyle{every node}=[circle,fill=white,draw=black,text=black]\n";
+
+    const double radius = 3.0;
+    int n = Graph::getN();
+
+    for (int i = 0; i < n; ++i) {
+        double angle = 2.0 * M_PI * i / n;
+        double x = radius * cos(angle);
+        double y = radius * sin(angle);
+        outFile << "\\node (" << i + 1 << ") at (" << x << "," << y << ") {" << i + 1 << "};\n";
+    }
+
+    const auto& adjacencyMatrix = Graph::getAdj();
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) { 
+            if (adjacencyMatrix[i][j]) {
+                outFile << "\\draw (" << i + 1 << ") -- (" << j + 1 << ");\n";
+            }
+        }
+    }
+
+    outFile << "\\end{tikzpicture}\n";
+    outFile << "\\end{document}\n";
+    outFile.close();
 }

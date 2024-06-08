@@ -63,6 +63,12 @@ int main(int argc, char* argv[]) {
         else if(action=="Even"){
              if(checkEvenDegrees()) cout<<"All are even"<<endl;
         }
+        else if(action=="Tikz"){
+            string filename;
+            cout<<"File name> ";
+            cin>>filename;
+            Graph::exportToTikz(filename);
+        }
         else cout<<"Incorect command"<<endl;
     }
 

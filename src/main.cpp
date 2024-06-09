@@ -24,19 +24,21 @@ int main(int argc, char* argv[]) {
     string mode = argv[1];
 
     if (mode == "--hamilton") {
-        cout << "nodes> ";
+        cout << "nodes> (10+)";
         int nodes;
         cin >> nodes;
-        cout << "saturation> ";
+        if(nodes<11){cout<<"Wrong number of nodes";exit(0);};
+        cout << "saturation> (0-100)";
         double sat;
         cin >> sat;
+        if(sat<0 || sat>100){cout<<"Wrong saturation";exit(0);};
         Graph::init(nodes, sat);
         genHam(sat);
     } else if (mode == "--non-hamilton") {
         cout << "nodes> ";
         int nodes;
         cin >> nodes;
-        Graph::init(nodes, 50);
+        Graph::init(nodes, 50.0);
         genNonHam();
     } else {
         cout << "Invalid usage of modes" << endl;

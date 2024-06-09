@@ -4,6 +4,8 @@
 #include <random>
 #include <algorithm>
 #include <fstream>
+#include <set>
+#include <utility>
 
 using namespace std;
 
@@ -58,52 +60,86 @@ void genHam(double s) {
     iota(cycle.begin(), cycle.end(), 0);
     shuffle(cycle.begin(), cycle.end(), mt19937{random_device{}()});
 
+    // Create a Hamiltonian cycle
     for (int i = 0; i < n; ++i) {
         Graph::addEdge(cycle[i], cycle[(i + 1) % n]);
     }
-    
+
+    // Ensure all degrees are even
+    vector<int> oddVertices;
     for (int i = 0; i < n; ++i) {
-        int deg = Graph::getDeg(i);
-        if (deg % 2 != 0) {
-            int j = (i + 1) % n;
-            while (j != i) {
-                int nextDeg = Graph::getDeg(j);
-                if (nextDeg % 2 != 0) {
-                    Graph::addEdge(i, j);
-                    break;
-                }
-                j = (j + 1) % n;
-            }
+        if (Graph::getDeg(i) % 2 != 0) {
+            oddVertices.push_back(i);
         }
     }
+
+    while (!oddVertices.empty()) {
+        int v1 = oddVertices.back();
+        oddVertices.pop_back();
+        int v2 = oddVertices.back();
+        oddVertices.pop_back();
+        Graph::addEdge(v1, v2);
+    }
+
     const auto& adj = Graph::getAdj();
     int edgeCnt = 0;
     for (const auto& row : adj) {
         edgeCnt += std::accumulate(row.begin(), row.end(), 0);
     }
     edgeCnt /= 2;
+
     int tgtEdges = static_cast<int>((n * (n - 1) / 2) * s / 100);
+
+    set<pair<int, int>> addedEdges;
     while (edgeCnt < tgtEdges) {
         int u = rand() % n;
-        int v = (u + 1) % n;
-        int w = (u + 2) % n;
-        if (u != v && u != w && v != w &&
+        int v = rand() % n;
+        int w = rand() % n;
+
+        if (u != v && u != w && v != w && 
             Graph::getAdj()[u][v] == 0 && Graph::getAdj()[v][w] == 0 && Graph::getAdj()[w][u] == 0) {
+            
             Graph::addEdge(u, v);
             Graph::addEdge(v, w);
             Graph::addEdge(w, u);
+
             edgeCnt += 3;
+            addedEdges.emplace(min(u, v), max(u, v));
+            addedEdges.emplace(min(v, w), max(v, w));
+            addedEdges.emplace(min(w, u), max(w, u));
         }
+    }
+
+    // Ensure all degrees are even again after adding edges
+    oddVertices.clear();
+    for (int i = 0; i < n; ++i) {
+        if (Graph::getDeg(i) % 2 != 0) {
+            oddVertices.push_back(i);
+        }
+    }
+
+    while (!oddVertices.empty()) {
+        int v1 = oddVertices.back();
+        oddVertices.pop_back();
+        int v2 = oddVertices.back();
+        oddVertices.pop_back();
+        Graph::addEdge(v1, v2);
     }
 }
 
 void genNonHam() {
-    genHam(50);
-    int isolated = rand() % Graph::getN();
-    for (int i = 0; i < Graph::getN(); ++i) {
-        Graph::remEdge(isolated, i);
+    double s = 50.0;
+    int n = Graph::getN();
+    genHam(s);
+    int isolatedNode = rand() % n;
+    for (int i = 0; i < n; ++i) {
+        if (i != isolatedNode && Graph::getAdj()[isolatedNode][i] == 1) {
+            Graph::remEdge(isolatedNode, i);
+        }
     }
+    cout << "Isolated node: " << isolatedNode+1 << endl;
 }
+
 
 void Graph::exportToTikz(const std::string& filename) {
     ofstream outFile(filename);
